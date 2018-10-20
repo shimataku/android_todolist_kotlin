@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val todoConnector : TodoConnector = TodoConnector(resources)
-        todoConnector.connect(
+        todoConnector.connectGetList(
                 success = {
                     val todoList = mutableListOf<Todo>()
                     it.data!!.forEach {

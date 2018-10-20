@@ -1,12 +1,12 @@
 package com.freecanvas.todoapp.entity
 
 
-data class TodoJson(
+data class TodoArrayJson(
     val count: Int?,
-    val data: List<Data?>?
+    val data: List<TodoJson?>?
 )
 
-data class Data(
+data class TodoJson(
     val id: String?,
     val title: String?,
     val description: String?,
@@ -14,4 +14,13 @@ data class Data(
     val startDate: Long?,
     val limitDate: Long?,
     val isFix: Boolean?
-)
+){
+    fun toJson() : String {
+        val jsonStr = String.format(
+                "{ \"title\" : \"%s\"," +
+                " \"description\" : \"%s\" ," +
+                " \"startDate\" : \"%d\" ," +
+                " \"endDate\" : \"%d\"}", title, description, startDate, limitDate)
+        return jsonStr
+    }
+}

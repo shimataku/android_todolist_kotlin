@@ -7,8 +7,13 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.freecanvas.todoapp.connector.TodoConnector
+import com.freecanvas.todoapp.entity.TodoJson
+import com.freecanvas.todoapp.util.toDateLong
 import com.freecanvas.todoapp.widget.DateSetListener
 import com.freecanvas.todoapp.widget.TimePicker
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddTodoActivity : AppCompatActivity(), DateSetListener {
 
@@ -43,7 +48,22 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
             setTitle("確認")
             setMessage("記述内容でTodoを追加します。")
             setPositiveButton("OK", DialogInterface.OnClickListener{ _, _ ->
-                Toast.makeText(context, "Dialog OK", Toast.LENGTH_LONG).show()
+                val title : String = findViewById<EditText>(R.id.title_edit).text.toString()
+                val description : String = findViewById<EditText>(R.id.description_edit).text.toString()
+                val startDate : Long = findViewById<EditText>(R.id.start_date_edit).text.toString().toDateLong()!!
+                val endDate : Long = findViewById<EditText>(R.id.end_date_edit).text.toString().toDateLong()!!
+                val todoJson : TodoJson = TodoJson(
+                        title=title, description=description, startDate=startDate, limitDate = endDate,
+                        id = null, publishedDate = null, isFix = null
+                )
+                val todoConnector : TodoConnector = TodoConnector(resources)
+                todoConnector.connectPost(todoJson = todoJson,
+                        success = {
+                            println("success")
+                        },error = {
+                            println("error")
+                        }
+                )
             })
             setNegativeButton("Cancel", null)
             show()

@@ -1,8 +1,6 @@
 package com.freecanvas.todoapp
 
-import com.freecanvas.todoapp.connector.TodoGetConnector
-import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
+import com.freecanvas.todoapp.connector.TodoConnector
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -20,7 +18,7 @@ class ExampleUnitTest {
 
     @Test
     fun connectTest() {
-        val connector : TodoGetConnector = TodoGetConnector()
+        val connector : TodoConnector = TodoConnector()
         connector.connect(success = {
             println("success")
         }, error = {
@@ -30,7 +28,7 @@ class ExampleUnitTest {
 
     @Test
     fun connectTest2() {
-        val connector : TodoGetConnector = TodoGetConnector()
+        val connector : TodoConnector = TodoConnector()
         connector.connect2(
                 success = {
                     println("success")

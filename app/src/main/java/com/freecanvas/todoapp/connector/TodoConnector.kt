@@ -12,7 +12,7 @@ import com.github.kittinunf.result.Result
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-class TodoGetConnector(resource : Resources) {
+class TodoConnector(resource : Resources) {
 
     val resource : Resources = resource
 

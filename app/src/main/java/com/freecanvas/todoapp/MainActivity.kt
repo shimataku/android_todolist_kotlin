@@ -1,15 +1,13 @@
 package com.freecanvas.todoapp
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ListView
 import com.freecanvas.todoapp.adapter.TodoAdapter
-import com.freecanvas.todoapp.connector.TodoGetConnector
-import com.freecanvas.todoapp.entity.Data
+import com.freecanvas.todoapp.connector.TodoConnector
 import com.freecanvas.todoapp.entity.Todo
-import com.freecanvas.todoapp.entity.TodoJson
 import com.freecanvas.todoapp.shelf.TodoShelf
 
 class MainActivity : AppCompatActivity() {
@@ -18,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val todoGetConnector : TodoGetConnector = TodoGetConnector(resources)
-        todoGetConnector.connect(
+        val todoConnector : TodoConnector = TodoConnector(resources)
+        todoConnector.connect(
                 success = {
                     val todoList = mutableListOf<Todo>()
                     it.data!!.forEach {
@@ -47,10 +45,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
         )
-
-        val button = findViewById<Button>(R.id.add_button)
-        button.setOnClickListener(View.OnClickListener {
-            println("push!!")
-        })
     }
+
+    fun pushTodoAddButton(view: View) {
+        val intent = Intent(this, AddTodoActivity::class.java)
+        startActivity(intent)
+    }
+
 }

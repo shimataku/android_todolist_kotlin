@@ -10,9 +10,8 @@ data class Data(
     val id: String?,
     val title: String?,
     val description: String?,
-    val publishedDate: String?,
-    val startDate: String?,
-    val limitDate: String?,
+    val publishedDate: Long?,
+    val startDate: Long?,
+    val limitDate: Long?,
     val isFix: Boolean?
 )
-

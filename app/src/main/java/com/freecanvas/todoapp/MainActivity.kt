@@ -18,37 +18,35 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val thread = Thread{
-            val todoGetConnector : TodoGetConnector = TodoGetConnector(resources)
-            todoGetConnector.connect(
-                   success = {
-                       val todoList = mutableListOf<Todo>()
-                       it.data!!.forEach {
-                           val todo : Todo = Todo(it!!.title!!, it!!.description!!)
-                           todoList.add(todo)
-                       }
-                       val todoShelf = TodoShelf(todos = todoList)
+        val todoGetConnector : TodoGetConnector = TodoGetConnector(resources)
+        todoGetConnector.connect(
+                success = {
+                    val todoList = mutableListOf<Todo>()
+                    it.data!!.forEach {
+                        val todo : Todo = Todo(it!!.title!!, it!!.description!!)
+                        todoList.add(todo)
+                    }
+                    val todoShelf = TodoShelf(todos = todoList)
 
-                       runOnUiThread{
-                           var listView : ListView = findViewById(R.id.listView) as ListView
-                           listView.adapter = TodoAdapter(this, todoShelf)
-                       }
-                   }
-                    ,error = {
-                        println("connected error")
-                        val todoList = mutableListOf<Todo>()
-                        for(i in 1..100) {
-                            val todo : Todo = Todo("sample title", "sample message")
-                            todoList.add(todo)
-                        }
-                        val todoShelf = TodoShelf(todos = todoList)
-                        runOnUiThread{
-                            val listView : ListView = findViewById(R.id.listView) as ListView
-                            listView.adapter = TodoAdapter(this, todoShelf)
-                        }
-                   }
-            )
-        }.start()
+                    runOnUiThread{
+                        var listView : ListView = findViewById(R.id.listView) as ListView
+                        listView.adapter = TodoAdapter(this, todoShelf)
+                    }
+                }
+                ,error = {
+            println("connected error")
+            val todoList = mutableListOf<Todo>()
+            for(i in 1..100) {
+                val todo : Todo = Todo("sample title", "sample message")
+                todoList.add(todo)
+            }
+            val todoShelf = TodoShelf(todos = todoList)
+            runOnUiThread{
+                val listView : ListView = findViewById(R.id.listView) as ListView
+                listView.adapter = TodoAdapter(this, todoShelf)
+            }
+        }
+        )
 
         val button = findViewById<Button>(R.id.add_button)
         button.setOnClickListener(View.OnClickListener {

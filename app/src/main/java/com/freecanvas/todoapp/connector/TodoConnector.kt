@@ -40,6 +40,25 @@ class TodoConnector(resource : Resources) {
         }
    }
 
+    fun connectGet(success:(TodoJson)->Unit, error:(ErrorResponse)->Unit) {
+        val url = resource.getString(R.string.domain) + "/inputform"
+        url.httpGet().response{
+            request, response, result->
+            when(result) {
+                is Result.Success->{
+                    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                    val adapter = moshi.adapter(TodoJson::class.java)
+                    val res = adapter.fromJson(String(response.data)) as TodoJson
+                    success(res)
+                }
+                is Result.Failure->{
+                     val errorResponse : ErrorResponse = ErrorResponse(response.url, response.statusCode, response.responseMessage)
+                    error(errorResponse)
+                }
+            }
+        }
+    }
+
     fun connectPost(todoJson:TodoJson, success:(TodoJson)->Unit, error:(ErrorResponse)->Unit){
         val url = resource.getString(R.string.domain) + "/inputform"
         url.httpPost().jsonBody(todoJson.toJson()).response{

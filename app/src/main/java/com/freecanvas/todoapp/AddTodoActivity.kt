@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.freecanvas.todoapp.connector.TodoConnector
 import com.freecanvas.todoapp.entity.TodoJson
+import com.freecanvas.todoapp.service.TodoService
 import com.freecanvas.todoapp.util.toDateLong
 import com.freecanvas.todoapp.widget.DateSetListener
 import com.freecanvas.todoapp.widget.TimePicker
@@ -56,14 +57,15 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
                         title=title, description=description, startDate=startDate, limitDate = endDate,
                         id = null, publishedDate = null, isFix = null
                 )
-                val todoConnector : TodoConnector = TodoConnector(resources)
-                todoConnector.connectPost(todoJson = todoJson,
-                        success = {
-                            println("success")
-                        },error = {
-                            println("error")
-                        }
-                )
+                val todoService : TodoService = TodoService(context)
+                todoService.create(todoJson, success = {
+                }, error = {
+                    AlertDialog.Builder(this.context).apply {
+                        setTitle(String.format("%d", it.statusCode))
+                        setMessage(it.message)
+                    }
+                })
+
             })
             setNegativeButton("Cancel", null)
             show()

@@ -8,30 +8,30 @@ import android.widget.ListView
 import com.freecanvas.todoapp.adapter.TodoAdapter
 import com.freecanvas.todoapp.connector.TodoConnector
 import com.freecanvas.todoapp.entity.Todo
+import com.freecanvas.todoapp.service.TodoService
 import com.freecanvas.todoapp.shelf.TodoShelf
 
 class MainActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val todoConnector : TodoConnector = TodoConnector(resources)
-        todoConnector.connectGetList(
-                success = {
-                    val todoList = mutableListOf<Todo>()
-                    it.data!!.forEach {
-                        val todo : Todo = Todo(it!!.title!!, it!!.description!!)
-                        todoList.add(todo)
-                    }
-                    val todoShelf = TodoShelf(todos = todoList)
+        val todoService : TodoService = TodoService(context = this)
+        todoService.getArray(success = {
+            val todoList = mutableListOf<Todo>()
+            it.data!!.forEach {
+                val todo : Todo = Todo(it!!.title!!, it!!.description!!)
+                todoList.add(todo)
+            }
+            val todoShelf = TodoShelf(todos = todoList)
 
-                    runOnUiThread{
-                        var listView : ListView = findViewById(R.id.listView) as ListView
-                        listView.adapter = TodoAdapter(this, todoShelf)
-                    }
-                }
-                ,error = {
+            runOnUiThread{
+                var listView : ListView = findViewById(R.id.listView) as ListView
+                listView.adapter = TodoAdapter(this, todoShelf)
+            }
+        }, error = {
             println("connected error")
             val todoList = mutableListOf<Todo>()
             for(i in 1..100) {
@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
                 val listView : ListView = findViewById(R.id.listView) as ListView
                 listView.adapter = TodoAdapter(this, todoShelf)
             }
-        }
-        )
+        })
+
     }
 
     fun pushTodoAddButton(view: View) {

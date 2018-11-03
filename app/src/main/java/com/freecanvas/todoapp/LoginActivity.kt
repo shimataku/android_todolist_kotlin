@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.freecanvas.todoapp.service.AuthUserInfoService
 
 class LoginActivity : AppCompatActivity() {
 
@@ -19,9 +20,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val auth : FirebaseAuth = FirebaseAuth.getInstance()
-        if( auth.currentUser != null) {
-            println(auth.currentUser.toString())
+        val authUserInfoService : AuthUserInfoService = AuthUserInfoService()
+        if( authUserInfoService.isLogin()) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

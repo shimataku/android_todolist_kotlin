@@ -1,6 +1,7 @@
 package com.freecanvas.todoapp
 
 import com.freecanvas.todoapp.connector.TodoConnector
+import com.freecanvas.todoapp.service.UserService
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -17,24 +18,14 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun connectTest() {
-        val connector : TodoConnector = TodoConnector()
-        connector.connect(success = {
-            println("success")
-        }, error = {
-            println("error")
-        })
-    }
+    fun createPass() {
+        val us : UserService = UserService()
 
-    @Test
-    fun connectTest2() {
-        val connector : TodoConnector = TodoConnector()
-        connector.connect2(
-                success = {
-                    println("success")
-                }, error = {
-            println("error")
+        //必ず正の数値が出力されるかを確認
+        for (i in 1..10000000) {
+            val str: String = us.createFrendPass()
+            val number : Int = str.toInt()
+            assert(number >= 1)
         }
-        )
     }
 }

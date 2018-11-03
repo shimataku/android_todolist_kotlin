@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TodoApp</string>
-    <string name="domain">http://XX.XX.XX.XX:0000</string>
+    <string name="domain">http://13.58.87.21:8080</string>
 
     <!-- layout use string -->
     <string name="how_to_title">Todoのタイトルを入力してください。</string>
@@ -12,4 +12,6 @@
     <string name="login_test">このアプリにはログインが必要です。</string>
     <string name="login_button_text">ログイン</string>
     <string name="login_description">この画面はログイン状態でないときに表示されます。\n以下のボタンからログインをしてください。</string>
+    <string name="todo_detail_title">タイトル</string>
+    <string name="todo_detail_description">詳細</string>
 </resources>

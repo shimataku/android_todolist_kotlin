@@ -11,70 +11,92 @@ import com.freecanvas.todoapp.entity.TodoJson
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.net.URL
 
-class TodoConnector(resource : Resources) {
-
-    val resource : Resources = resource
+class TodoConnector() {
 
     fun connectGetList(success:(TodoArrayJson)->Unit, error:(ErrorResponse)->Unit){
-        val url = resource.getString(R.string.domain) + "/inputform"
-         url.httpGet().response{
-            request, response, result->
-            when(result) {
-                is Result.Success -> {
-                    println("非同期処理の結果：" + String(response.data))
-                    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                    val adapter = moshi.adapter(TodoArrayJson::class.java)
-                    val str = String(response.data)
-                    val res = adapter.fromJson(str) as TodoArrayJson
-                    success(res);
-                }
-                is Result.Failure -> {
-                    println("通信に失敗しました。")
-                    val errorResponse : ErrorResponse = ErrorResponse(response.url, response.statusCode, response.responseMessage)
-                    error(errorResponse)
-                }
-            }
-        }
-   }
 
-    fun connectGet(success:(TodoJson)->Unit, error:(ErrorResponse)->Unit) {
-        val url = resource.getString(R.string.domain) + "/inputform"
-        url.httpGet().response{
-            request, response, result->
-            when(result) {
-                is Result.Success->{
-                    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                    val adapter = moshi.adapter(TodoJson::class.java)
-                    val res = adapter.fromJson(String(response.data)) as TodoJson
-                    success(res)
-                }
-                is Result.Failure->{
-                     val errorResponse : ErrorResponse = ErrorResponse(response.url, response.statusCode, response.responseMessage)
-                    error(errorResponse)
-                }
-            }
-        }
+        val userId : String = FirebaseAuth.getInstance().uid!!
+
+        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
+        val todosCollection : CollectionReference = db.collection("todos")
+        val query : Query = todosCollection.whereEqualTo("user", userId)
+        query.limit(20)
+        query
+                .get()
+                .addOnCompleteListener(OnCompleteListener<QuerySnapshot> {
+                    if( it.isSuccessful() ){
+                        val array = mutableListOf<TodoJson>()
+                        for (document in it.result) {
+                            val todo : TodoJson = TodoJson(id = document.getString("id"),
+                                    user = document.getString("user"),
+                                    title = document.getString("title"),
+                                    description = document.getString("description"),
+                                    publishedDate = document.getLong("publishedDate"),
+                                    startDate = document.getLong("startDate"),
+                                    limitDate = document.getLong("limitDate"),
+                                    isFix = document.getBoolean("isFix"))
+                            array.add(todo)
+                        }
+                        val todoArrayJson : TodoArrayJson = TodoArrayJson(array.size, array)
+                        success(todoArrayJson)
+                    }else{
+                        val errorResponse : ErrorResponse = ErrorResponse( "connected error", 0, it.exception.toString())
+                        error(errorResponse)
+                    }
+                })
     }
 
-    fun connectPost(todoJson:TodoJson, success:(TodoJson)->Unit, error:(ErrorResponse)->Unit){
-        val url = resource.getString(R.string.domain) + "/inputform"
-        url.httpPost().jsonBody(todoJson.toJson()).response{
-            request, response, result->
-            when(result) {
-                is Result.Success -> {
-                    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                    val adapter = moshi.adapter(TodoJson::class.java)
-                    val res = adapter.fromJson(String(response.data)) as TodoJson
-                    success(res)
-                }
-                is Result.Failure -> {
-                    val errorResponse: ErrorResponse = ErrorResponse(response.url, response.statusCode, response.responseMessage)
+    fun connectGet(id:String, success:(TodoJson)->Unit, error:(ErrorResponse)->Unit) {
+        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
+        val todosCollection : CollectionReference = db.collection("todos")
+        val query : Query = todosCollection.whereEqualTo("id", id)
+        query.limit(1)
+        query.get()
+                .addOnCompleteListener(OnCompleteListener<QuerySnapshot> {
+                    if( it.isSuccessful() ){
+                        val array = mutableListOf<TodoJson>()
+                        if( it.result.count() != 0) {
+                            for (document in it.result) {
+                                val todo: TodoJson = TodoJson(id = document.getString("id"),
+                                        user = document.getString("user"),
+                                        title = document.getString("title"),
+                                        description = document.getString("description"),
+                                        publishedDate = document.getLong("publishedDate"),
+                                        startDate = document.getLong("startDate"),
+                                        limitDate = document.getLong("limitDate"),
+                                        isFix = document.getBoolean("isFix"))
+                                success(todo)
+                            }
+                        }else{
+                            val errorResponse : ErrorResponse = ErrorResponse("get resource error", 0, "一つ以上のTodoが取得されました。")
+                            error(errorResponse)
+                        }
+                    }else{
+                        val errorResponse : ErrorResponse = ErrorResponse( "connected error", 0, it.exception.toString())
+                        error(errorResponse)
+                    }
+                })
+    }
+
+    fun connectPost(todoJson:TodoJson, success:()->Unit, error:(ErrorResponse)->Unit){
+        val db : FirebaseFirestore = FirebaseFirestore.getInstance()
+        db.collection("todos")
+                .add(todoJson.toMap())
+                .addOnSuccessListener(OnSuccessListener<DocumentReference>{
+                    success()
+                })
+                .addOnFailureListener(OnFailureListener() {
+                    val errorResponse : ErrorResponse = ErrorResponse("", 0, "")
                     error(errorResponse)
-                }
-            }
-        }
+                })
     }
 }

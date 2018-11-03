@@ -8,6 +8,10 @@
             name="todo"
             type="com.freecanvas.todoapp.entity.Todo"
             />
+        <variable
+            name="onItemClick"
+            type="android.widget.AdapterView.OnItemClickListener"
+            />
     </data>
 
 <android.support.constraint.ConstraintLayout

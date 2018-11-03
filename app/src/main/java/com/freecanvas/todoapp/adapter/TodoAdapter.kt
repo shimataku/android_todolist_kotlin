@@ -43,4 +43,5 @@ class TodoAdapter(val parentContext:Context, val todoShelf : TodoShelf) : BaseAd
     override fun getCount(): Int {
         return todos.count
     }
+
 }

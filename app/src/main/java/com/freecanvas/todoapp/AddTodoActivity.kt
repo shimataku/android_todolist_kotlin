@@ -8,11 +8,14 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.freecanvas.todoapp.connector.TodoConnector
+import com.freecanvas.todoapp.entity.TodoInput
 import com.freecanvas.todoapp.entity.TodoJson
 import com.freecanvas.todoapp.service.TodoService
 import com.freecanvas.todoapp.util.toDateLong
 import com.freecanvas.todoapp.widget.DateSetListener
 import com.freecanvas.todoapp.widget.TimePicker
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,7 +47,7 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
         newFragment.show(supportFragmentManager, "datePicker")
     }
 
-    fun pushRegisterButton(view: View) {
+    fun showConfirmDialog() {
         AlertDialog.Builder(this).apply {
             setTitle("確認")
             setMessage("記述内容でTodoを追加します。")
@@ -53,12 +56,19 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
                 val description : String = findViewById<EditText>(R.id.description_edit).text.toString()
                 val startDate : Long = findViewById<EditText>(R.id.start_date_edit).text.toString().toDateLong()!!
                 val endDate : Long = findViewById<EditText>(R.id.end_date_edit).text.toString().toDateLong()!!
-                val todoJson : TodoJson = TodoJson(
-                        title=title, description=description, startDate=startDate, limitDate = endDate,
-                        id = null, publishedDate = null, isFix = null
+                val todoInput : TodoInput = TodoInput(
+                        title = title,
+                        description = description,
+                        publishedDate = Date().time,
+                        startDate = startDate,
+                        limitDate = endDate,
+                        isFix = false
                 )
                 val todoService : TodoService = TodoService(context)
-                todoService.create(todoJson, success = {
+                todoService.connectCreate(todoInput, success = {
+                    runOnUiThread{
+                        showCompDialog()
+                    }
                 }, error = {
                     AlertDialog.Builder(this.context).apply {
                         setTitle(String.format("%d", it.statusCode))
@@ -70,5 +80,23 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
             setNegativeButton("Cancel", null)
             show()
         }
+    }
+
+    fun showCompDialog() {
+        AlertDialog.Builder(this).apply {
+            setMessage("登録しました。")
+            setPositiveButton("OK", DialogInterface.OnClickListener{ _, _ ->
+                finishThisActivity()
+            })
+            show()
+        }
+    }
+
+    fun pushRegisterButton(view: View) {
+        showConfirmDialog()
+    }
+
+    fun finishThisActivity() {
+        finish()
     }
 }

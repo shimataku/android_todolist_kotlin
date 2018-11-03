@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">TodoApp</string>
-    <string name="domain">http://13.58.87.21:8080</string>
 
     <!-- layout use string -->
     <string name="how_to_title">Todoのタイトルを入力してください。</string>

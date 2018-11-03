@@ -18,13 +18,12 @@ class TodoService(val context: Context) {
                 id = UUID.randomUUID().toString(),
                 user = authUserInfoService.getUserUDI(),
                 title = todoInput.title,
-                description = todoInput.description,
                 publishedDate = todoInput.publishedDate,
                 startDate = todoInput.startDate,
                 limitDate = todoInput.limitDate,
                 isFix = false
         )
-        val todoConnector : TodoConnector = TodoConnector(context.resources)
+        val todoConnector : TodoConnector = TodoConnector()
         todoConnector.connectPost(todoJson = todoJson, success ={
             //取得内容はここで変更
             success()
@@ -34,7 +33,7 @@ class TodoService(val context: Context) {
     }
 
     fun connectGetArray(success:(TodoArrayJson)->Unit, error:(ErrorResponse)->Unit) {
-        val todoConnector : TodoConnector = TodoConnector(context.resources)
+        val todoConnector : TodoConnector = TodoConnector()
         todoConnector.connectGetList(success = {
             todoArrayJson = it
             success(it)
@@ -44,7 +43,7 @@ class TodoService(val context: Context) {
     }
 
     fun connectGet(id: String, success:(TodoJson)->Unit, error:(ErrorResponse)->Unit) {
-        val todoConnector : TodoConnector = TodoConnector(context.resources)
+        val todoConnector : TodoConnector = TodoConnector()
         todoConnector.connectGet(id = id, success = {
            success(it)
         }, error = {

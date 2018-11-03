@@ -10,7 +10,6 @@ data class TodoJson(
     val id: String?,
     val user: String?,
     val title: String?,
-    val description: String?,
     val publishedDate: Long?,
     val startDate: Long?,
     val limitDate: Long?,
@@ -21,7 +20,7 @@ data class TodoJson(
                 "{ \"title\" : \"%s\"," +
                 " \"description\" : \"%s\" ," +
                 " \"startDate\" : \"%d\" ," +
-                " \"endDate\" : \"%d\"}", title, description, startDate, limitDate)
+                " \"endDate\" : \"%d\"}", title,  startDate, limitDate)
         return jsonStr
     }
 
@@ -29,7 +28,6 @@ data class TodoJson(
         val map = mapOf("id" to id,
                 "user" to user,
                 "title" to title,
-                "description" to description,
                 "publishedDate" to publishedDate,
                 "startDate" to startDate,
                 "limitDate" to limitDate,

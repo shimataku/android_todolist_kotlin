@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener{
         todoService.connectGetArray(success = {
             val todoList = mutableListOf<Todo>()
             it.data!!.forEach {
-                val todo : Todo = Todo(it!!.id!!, it!!.title!!, it!!.description!!)
+                val todo : Todo = Todo(it!!.id!!, it!!.title!!)
                 todoList.add(todo)
             }
             val todoShelf = TodoShelf(todos = todoList)
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener{
             println("connected error")
             val todoList = mutableListOf<Todo>()
             for(i in 1..100) {
-                val todo : Todo = Todo("id", "sample title", "sample message")
+                val todo : Todo = Todo("id", "sample title")
                 todoList.add(todo)
             }
             val todoShelf = TodoShelf(todos = todoList)

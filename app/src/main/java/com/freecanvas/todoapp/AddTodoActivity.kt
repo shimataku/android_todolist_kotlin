@@ -53,12 +53,10 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
             setMessage("記述内容でTodoを追加します。")
             setPositiveButton("OK", DialogInterface.OnClickListener{ _, _ ->
                 val title : String = findViewById<EditText>(R.id.title_edit).text.toString()
-                val description : String = findViewById<EditText>(R.id.description_edit).text.toString()
                 val startDate : Long = findViewById<EditText>(R.id.start_date_edit).text.toString().toDateLong()!!
                 val endDate : Long = findViewById<EditText>(R.id.end_date_edit).text.toString().toDateLong()!!
                 val todoInput : TodoInput = TodoInput(
                         title = title,
-                        description = description,
                         publishedDate = Date().time,
                         startDate = startDate,
                         limitDate = endDate,

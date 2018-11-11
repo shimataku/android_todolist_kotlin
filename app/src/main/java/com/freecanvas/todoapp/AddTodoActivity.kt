@@ -27,7 +27,7 @@ class AddTodoActivity : AppCompatActivity(), DateSetListener {
     }
 
     override fun onDateSet(id:Int, year:Int, month:Int, day:Int) {
-        val settingDate = String.format("%4d年%2d月%2d日", year, month, day)
+        val settingDate = String.format("%4d年%2d月%2d日", year, month+1, day)
         val textEdit = findViewById<EditText>(id)
         textEdit.setText(settingDate)
     }

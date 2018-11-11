@@ -11,7 +11,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.freecanvas.todoapp.connector.UserConnector
 import com.freecanvas.todoapp.service.AuthUserInfoService
+import com.freecanvas.todoapp.service.UserService
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -22,9 +25,31 @@ class LoginActivity : AppCompatActivity() {
 
         val authUserInfoService : AuthUserInfoService = AuthUserInfoService()
         if( authUserInfoService.isLogin()) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            val userService : UserService = UserService()
+            userService.connectGetUser(success = {
+                runOnUiThread {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            }, error = {
+                if( it.statusCode == UserConnector.ERROR_CODE_USER_CONNECTOR_NON_REGISTER ) {
+                    runOnUiThread {
+                        val intent = Intent(this, UserInfoEditActivity::class.java)
+                        intent.putExtra("isUpdate", false)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+                if( it.statusCode == UserConnector.ERROR_CODE_USER_CONNECTOR_MUL_REGISTER) {
+                    println("あり得ないエラーです")
+                }
+
+                if( it.statusCode == 0) {
+                    println("通信エラーです")
+                }
+            })
+
         }
         setContentView(R.layout.login)
     }

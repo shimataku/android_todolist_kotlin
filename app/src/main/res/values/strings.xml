@@ -13,4 +13,5 @@
     <string name="login_description">この画面はログイン状態でないときに表示されます。\n以下のボタンからログインをしてください。</string>
     <string name="todo_detail_title">タイトル</string>
     <string name="todo_detail_description">詳細</string>
+    <string name="user_register_description">表示名を決めてください。</string>
 </resources>

@@ -28,7 +28,7 @@ class TodoConnector() {
 
         val db : FirebaseFirestore = FirebaseFirestore.getInstance()
         val todosCollection : CollectionReference = db.collection("todos")
-        val query : Query = todosCollection.whereEqualTo("user", userId)
+        val query : Query = todosCollection.whereArrayContains("watcher", userId)
         query.limit(20)
         query
                 .get()
